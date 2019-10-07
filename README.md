@@ -3,14 +3,62 @@ Docker Image For Local PHP Project Versions
 
 
 # installation
-* git clone git@github.com:Neznajki/docker-php73.git
-* cd docker-php73
-* docker build -t docker/php73 .
+* docker login docker.pkg.github.com -u USERNAME -p PASSWORD/TOKEN
+* start network | https enabled network in certificate enable section
+```bash
+docker network create local_network
+docker run -d --name local_network -p 80:80 --restart always --net local_network -v /var/run/docker.sock:/tmp/docker.sock:ro -v jwilder/nginx-proxy:latest
+```
 
-# install proxy
-* git clone git clone https://github.com/jwilder/nginx-proxy.git
-* cd nginx-proxy
-* docker build -t nginx/proxy .
+#setup mysql
+```bash
+mkdir -p ~/docker_common/mysql
+cd ~/docker_common/mysql
+cat > docker-compose.yml <<EOL
+# Use root/example as user/password credentials
+
+version: '3.1'
+
+services:
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8080:8080
+
+    mysql:
+        hostname: mysql
+        image: mysql:5.7
+        container_name: mysql
+        restart: always
+        environment:
+            VIRTUAL_HOST: 'mysql.authorization-module.local'
+            MYSQL_DATABASE: 'authorization'
+            # So you don't have to use root, but you can if you like
+            MYSQL_USER: 'user'
+            # You can use whatever password you like
+            MYSQL_PASSWORD: '1'
+            # Password for root access
+            MYSQL_ROOT_PASSWORD: 'p1assword'
+        ports:
+            # <Port exposed> : < MySQL Port running inside container>
+            - '3306:3306'
+        expose:
+            # Opens port 3306 on the container
+            - '3306'
+            # Where our data will be persisted
+        volumes:
+            - /tmp/authorization-module/db:/var/lib/mysql
+
+networks:
+    default:
+        external:
+            name: local_network
+EOL
+
+docker-compose up -d
+
+``` 
 
 # certificate enable
 * create cert
@@ -46,8 +94,15 @@ EOL
 
 openssl req -nodes -new -x509 -keyout local.key -out local.crt -config local.conf
 ```
-* start network
+* start network dynamic
 ```bash
-docker network create local_network
-docker run -d --name local_network -p 80:80 -p 443:443 --restart always --net local_network -v /var/run/docker.sock:/tmp/docker.sock:ro -v $HOME/certs:/etc/nginx/certs/:ro nginx/proxy:latest
+docker network create local_network 
+docker run -d --name local_network -p 80:80 -p 443:443 --restart always --net local_network -v /var/run/docker.sock:/tmp/docker.sock:ro -v $HOME/certs:/etc/nginx/certs/:ro jwilder/nginx-proxy:latest
+```
+* start network strict
+```bash
+docker network create local_network \
+--gateway=172.228.0.1 \
+--subnet=172.228.0.0/25
+docker run -d --name local_network -p 80:80 -p 443:443 --restart always --net local_network -v /var/run/docker.sock:/tmp/docker.sock:ro -v $HOME/certs:/etc/nginx/certs/:ro jwilder/nginx-proxy:latest
 ```
