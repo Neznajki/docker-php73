@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y \
       apt-utils \
       apache2 \
       sudo \
-      iputils-ping
+      iputils-ping \
+      git
 
 RUN apt-get install -y \
       php7.3-cli \
@@ -78,17 +79,15 @@ RUN sed -ri 's/^display_errors\s*=\s*Off/display_errors = On/g' /etc/php/7.3/apa
     echo "error_reporting = E_ALL" >> /etc/php/7.3/cli/php.ini && \
     echo "xdebug.var_display_max_depth = 10" >> /etc/php/7.3/apache2/php.ini && \
     echo "xdebug.profiler_enable = 0" >> /etc/php/7.3/apache2/php.ini && \
-    echo "xdebug.remote_connect_back = 1" >> /etc/php/7.3/apache2/php.ini && \
-    echo "xdebug.remote_connect_back = 1" >> /etc/php/7.3/cli/php.ini && \
-#    echo "xdebug.remote_autostart = 1" >> /etc/php/7.3/apache2/php.ini && \
-    echo "xdebug.remote_enable = 1" >> /etc/php/7.3/apache2/php.ini && \
-    echo "xdebug.remote_enable = 1" >> /etc/php/7.3/cli/php.ini && \
     echo "xdebug.profiler_enable_trigger = 1" >> /etc/php/7.3/apache2/php.ini && \
     echo "xdebug.profiler_output_dir = \"/opt/xdebug\"" >> /etc/php/7.3/apache2/php.ini && \
     echo "xdebug.idekey = \"debug\"" >> /etc/php/7.3/apache2/php.ini && \
     echo "xdebug.idekey = \"debug\"" >> /etc/php/7.3/cli/php.ini && \
     echo "xdebug.var_display_max_depth = 10" >> /etc/php/7.3/cli/php.ini && \
-    echo "xdebug.profiler_output_dir = \"/opt/xdebug\"" >> /etc/php/7.3/cli/php.ini
+    echo "xdebug.profiler_output_dir = \"/opt/xdebug\"" >> /etc/php/7.3/cli/php.ini && \
+    echo 'xdebug.remote_autostart = 1' >> /etc/php/7.0/apache2/php.ini && \
+    echo 'xdebug.remote_enable = 1' >> /etc/php/7.0/apache2/php.ini && \
+    echo 'xdebug.remote_connect_back = 1' >> /etc/php/7.0/apache2/php.ini
 
 WORKDIR ${APACHE_DOCUMENT_ROOT}
 USER developer
