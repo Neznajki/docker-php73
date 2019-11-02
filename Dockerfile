@@ -26,7 +26,8 @@ RUN apt-get install -y \
       php7.3-bcmath \
       php7.3-xdebug \
       php7.3-xmlrpc \
-      php7.3-xsl
+      php7.3-xsl \
+      php7.3-zip
 
 ENV USER=developer USER_ID=1000 USER_GID=1000
 

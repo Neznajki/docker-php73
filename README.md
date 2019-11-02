@@ -48,7 +48,8 @@ services:
             - '3306'
             # Where our data will be persisted
         volumes:
-            - /tmp/authorization-module/db:/var/lib/mysql
+            #if you use /tmp dir there is chance that all data will be erased so you could pick any other dir
+            - /tmp/authorization-module/db:/var/lib/mysql:cached
 
 networks:
     default:
