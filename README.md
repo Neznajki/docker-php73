@@ -53,7 +53,7 @@ services:
 networks:
     default:
         external:
-            name: local_network
+            name: local.net
 EOL
 
 docker-compose up -d
@@ -66,7 +66,7 @@ docker-compose up -d
 mkdir ~/certs/
 cd ~/certs
 
-cat > local.conf <<EOL
+cat > local.net.conf <<EOL
 [ req ]
 default_bits        = 2048
 distinguished_name  = subject
@@ -83,26 +83,26 @@ localityName            = Locality Name (eg, city)
 localityName_default    = Riga
 
 organizationName         = Organization Name (eg, company)
-organizationName_default = local
+organizationName_default = local_network
 
 commonName          = Common Name (e.g. server FQDN or YOUR name)
-commonName_default  = *.local
+commonName_default  = *.local.net
 
 emailAddress         = Email Address
 emailAddress_default = 
 EOL
 
-openssl req -nodes -new -x509 -keyout local.key -out local.crt -config local.conf
+openssl req -nodes -new -x509 -keyout local.net.key -out local.net.crt -config local.net.conf
 ```
 * start network dynamic
 ```bash
-docker network create local_network 
-docker run -d --name local_network -p 80:80 -p 443:443 --restart always --net local_network -v /var/run/docker.sock:/tmp/docker.sock:ro -v $HOME/certs:/etc/nginx/certs/:ro jwilder/nginx-proxy:latest
+docker network create local.net 
+docker run -d --name local_network -p 80:80 -p 443:443 --restart always --net local.net -v /var/run/docker.sock:/tmp/docker.sock:ro -v $HOME/certs:/etc/nginx/certs/:ro jwilder/nginx-proxy:latest
 ```
 * start network strict
 ```bash
-docker network create local_network \
+docker network create local.net \
 --gateway=172.228.0.1 \
 --subnet=172.228.0.0/25
-docker run -d --name local_network -p 80:80 -p 443:443 --restart always --net local_network -v /var/run/docker.sock:/tmp/docker.sock:ro -v $HOME/certs:/etc/nginx/certs/:ro jwilder/nginx-proxy:latest
+docker run -d --name local_network -p 80:80 -p 443:443 --restart always --net local.net -v /var/run/docker.sock:/tmp/docker.sock:ro -v $HOME/certs:/etc/nginx/certs/:ro jwilder/nginx-proxy:latest
 ```
