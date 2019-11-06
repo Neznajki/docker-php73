@@ -32,7 +32,6 @@ services:
         container_name: mysql
         restart: always
         environment:
-            VIRTUAL_HOST: 'mysql.authorization-module.local'
             MYSQL_DATABASE: 'authorization'
             # So you don't have to use root, but you can if you like
             MYSQL_USER: 'user'
