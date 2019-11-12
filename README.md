@@ -7,7 +7,7 @@ Docker Image For Local PHP Project Versions
 * start network | https enabled network in certificate enable section
 ```bash
 docker network create local_network
-docker run -d --name local_network -p 80:80 --restart always --net local_network -v /var/run/docker.sock:/tmp/docker.sock:ro -v jwilder/nginx-proxy:latest
+docker run -d --name local_network -p 80:80 --restart always --net local_network -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy:latest
 ```
 
 #setup mysql
