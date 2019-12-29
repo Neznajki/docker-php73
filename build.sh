@@ -1,4 +1,4 @@
 #!/bin/bash
 
-docker build -t docker.pkg.github.com/neznajki/docker-php73/apache:latest .
-docker push docker.pkg.github.com/neznajki/docker-php73/apache:latest
+docker build -t neznajki/docker-php73 .
+docker push neznajki/docker-php73:latest
